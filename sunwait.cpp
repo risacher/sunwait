@@ -860,6 +860,15 @@ int main (int argc, char *argv[])
     // Shave off (add) UTC offset, so that time_t is converted from midnight local-time to midnight UTC on the target day
     targetTm.tm_sec += myRound (pRun->utcBiasHours * 60.0 * 60.0);
 
+    // Adjustment below suggested by Phos Quartz on sourceforge.net to
+    // address the case when invocation time and target time are not
+    // in the same timezone (i.e. standard time vs daylight time)
+    // see https://sourceforge.net/p/sunwait4windows/discussion/general/thread/98fc17dd5f/
+    struct tm localTm;
+    myLocalTime (&pRun->nowTimet, &localTm);
+    int isdst = localTm.tm_isdst;
+    targetTm.tm_isdst = isdst;
+
     // All done
     pRun->targetTimet = mktime (&targetTm);  // <<<<<< The important bit done <<< targetTimet is set to midnight UTC
 
