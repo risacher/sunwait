@@ -103,6 +103,7 @@ void print_usage ()
   printf ("    nautical      Nautical twilight.     -12 degrees below horizon.\n");
   printf ("    astronomical  Astronomical twilight. -18 degrees below horizon.\n");
   printf ("    angle [X.XX]  User-specified twilight-angle (degrees). Default: 0.\n");
+  printf ("    solarnoon     Sun directly overhead.\n");
   printf ("\n");
   printf ("Sunrise/sunset. Only useful with major-options: 'wait' and 'list'. Any of: (default: both)\n");
   printf ("    rise          Wait for the sun to rise past specified twilight & offset.\n");
@@ -625,6 +626,7 @@ int main (int argc, char *argv[])
   pRun->reportSunrise     = ONOFF_OFF;
   pRun->reportSunset      = ONOFF_OFF;
   pRun->utc               = ONOFF_OFF;
+  pRun->reportSolarnoon   = ONOFF_OFF;
 
   pRun->twilightAngle     = TWILIGHT_ANGLE_DAYLIGHT;
 
@@ -760,6 +762,9 @@ int main (int argc, char *argv[])
                !strcmp (arg, "dusk")          ||
                !strcmp (arg, "sundown")       ||
                !strcmp (arg, "down"))         pRun->reportSunset = ONOFF_ON;
+
+    else if   (!strcmp (arg, "noon")          ||
+               !strcmp (arg, "solarnoon"))    pRun->reportSolarnoon = ONOFF_ON;
 
     // Specify latitude and longitude - quite complex, so I've handled it elsewhere
     else if   (isBearing (pRun, arg)) {} /* Functionality in "isBearing()" */
@@ -946,10 +951,10 @@ int main (int argc, char *argv[])
   )  pRun->functionUsage = ONOFF_ON;
 
   /*
-  ** Check: Sunrise or sunset.  IF neither set THEN set both
+  ** Check: Sunrise or sunset or solarnoon.  IF none set THEN set both
   */
 
-  if (pRun->reportSunrise == ONOFF_OFF && pRun->reportSunset == ONOFF_OFF)
+  if (pRun->reportSunrise == ONOFF_OFF && pRun->reportSunset == ONOFF_OFF && pRun->reportSolarnoon == ONOFF_OFF)
   { pRun->reportSunrise = ONOFF_ON;
     pRun->reportSunset  = ONOFF_ON;
   }

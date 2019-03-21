@@ -51,6 +51,7 @@ typedef struct
 
   OnOff         reportSunrise;       // Report sun rising
   OnOff         reportSunset;        // Report sun setting
+  OnOff         reportSolarnoon;     // Report solar noon
 
   unsigned int  listDays;            // How many days should sunrise/set be listed for. (function: List)
 

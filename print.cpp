@@ -106,6 +106,7 @@ void print_times
 ( const OnOff    pGmt
 , const OnOff    pSunrise
 , const OnOff    pSunset
+, const OnOff    pSolarnoon
 , const time_t   pMidnightTimet 
 , const double   pSouthHour
 , const double   pDiurnalArc
@@ -122,6 +123,8 @@ void print_times
     printf ("%s", pSeparator);
   if (pSunset  == ONOFF_ON)
     print_a_sun_time (pGmt, &pMidnightTimet, setHour, offsetDiurnalArc);
+  if (pSolarnoon  == ONOFF_ON)
+    print_a_sun_time (pGmt, &pMidnightTimet, pSouthHour, offsetDiurnalArc);
 
        if (offsetDiurnalArc >= 24.0) printf (" (Midnight sun)");
   else if (offsetDiurnalArc <=  0.0) printf (" (Polar night)");
@@ -139,6 +142,7 @@ inline void print_times
   ( pRun->utc
   , pRun->reportSunrise
   , pRun->reportSunset
+  , pRun->reportSolarnoon
   , pRun->targetTimet
   , pTarget->southHourUTC
   , pTarget->diurnalArc
@@ -212,7 +216,7 @@ void generate_report (const runStruct *pRun)
   ("                   Timezone: %s\n", buffer);
 
   printf
-  ("   Sun directly north/south: ");
+  ("Sun direct N/S (solar noon): ");
   print_a_time (pRun->utc, &pRun->targetTimet, tmpTarget.southHourUTC);
   printf ("\n");
 
