@@ -1052,10 +1052,13 @@ int wait (const runStruct *pRun)
   // Calculate duration to wait for each day's rise and set (seconds)
   // (targetTimet is set to midnight on the target day)
   long waitRiseYesterday = waitMidnightUTC + static_cast <long> ( 3600.0 * getOffsetRiseHourUTC (pRun, &yesterday) );
+  long waitNoonYesterday = waitMidnightUTC + static_cast <long> ( 3600.0 * yesterday.southHourUTC );
   long waitSetYesterday  = waitMidnightUTC + static_cast <long> ( 3600.0 * getOffsetSetHourUTC  (pRun, &yesterday) );
   long waitRiseToday     = waitMidnightUTC + static_cast <long> ( 3600.0 * getOffsetRiseHourUTC (pRun, &today)     );
+  long waitNoonToday     = waitMidnightUTC + static_cast <long> ( 3600.0 * today.southHourUTC );
   long waitSetToday      = waitMidnightUTC + static_cast <long> ( 3600.0 * getOffsetSetHourUTC  (pRun, &today)     );
   long waitRiseTomorrow  = waitMidnightUTC + static_cast <long> ( 3600.0 * getOffsetRiseHourUTC (pRun, &tomorrow)  );
+  long waitNoonTomorrow  = waitMidnightUTC + static_cast <long> ( 3600.0 * tomorrow.southHourUTC );
   long waitSetTomorrow   = waitMidnightUTC + static_cast <long> ( 3600.0 * getOffsetSetHourUTC  (pRun, &tomorrow)  );
 
   // Determine next sunrise and sunset 
@@ -1063,6 +1066,9 @@ int wait (const runStruct *pRun)
 
   long waitRiseSeconds = 0;
   long waitSetSeconds = 0;
+  long waitNoonSeconds = waitNoonYesterday;
+  if (waitNoonYesterday < 0) { waitNoonSeconds = waitNoonToday; }
+  if (waitNoonToday < 0)     { waitNoonSeconds = waitNoonTomorrow; }
 
   if      (waitRiseYesterday > 0) { waitRiseSeconds = waitRiseYesterday; waitSetSeconds = waitSetYesterday; }
   else if (waitSetYesterday  > 0) { waitRiseSeconds = waitRiseToday;     waitSetSeconds = waitSetYesterday; }
@@ -1101,11 +1107,13 @@ int wait (const runStruct *pRun)
   long waitSeconds = 0;
 
   if (pRun->reportSunrise == ONOFF_ON  && pRun->reportSunset == ONOFF_OFF)
-  { if (isDay == ONOFF_OFF || waitRiseSeconds < 6*60*60) waitSeconds = waitRiseSeconds; }
+    { if (isDay == ONOFF_OFF || waitRiseSeconds < 6*60*60) waitSeconds = waitRiseSeconds; }
   else if (pRun->reportSunrise == ONOFF_OFF && pRun->reportSunset == ONOFF_ON)
-  { if (isDay == ONOFF_ON || waitSetSeconds < 6*60*60)  waitSeconds = waitSetSeconds; }
+    { if (isDay == ONOFF_ON || waitSetSeconds < 6*60*60)  waitSeconds = waitSetSeconds; }
+  else if (pRun->reportSolarnoon == ONOFF_ON )
+    { waitSeconds = waitNoonSeconds; }
   else
-  { waitSeconds = waitRiseSeconds < waitSetSeconds ? waitRiseSeconds : waitSetSeconds; }
+    { waitSeconds = waitRiseSeconds < waitSetSeconds ? waitRiseSeconds : waitSetSeconds; }
 
   // Don't wait if event has passed (or next going to occur soon [6hrs])
   if (waitSeconds <= 0) 
