@@ -53,5 +53,9 @@ dkms.conf
 /.vs
 /Debug
 /Release
-/sunwait.vcxproj.filters
-/sunwait.vcxproj.user
+/*.vcxproj.filters
+/*.vcxproj.user
+/obj
+/x64
+*.tlog
+
