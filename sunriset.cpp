@@ -100,7 +100,7 @@ void sunriset (const runStruct *pRun, targetStruct *pTarget)
     diurnalArc = 24.0; // Midnight Sun
 
   if (pRun->debug == ONOFF_ON)
-  { printf ("Debug: sunriset.cpp: Sun directly south: %f UTC, Dirunal Arc = %f hours\n", southHour, diurnalArc);
+  { printf ("Debug: sunriset.cpp: Sun directly south: %f UTC, Diurnal Arc = %f hours\n", southHour, diurnalArc);
     printf ("Debug: sunriset.cpp: Days since 2000: %li\n", pTarget->daysSince2000);
     if (diurnalArc >= 24.0) printf ("Debug: sunriset.cpp: No rise or set: Midnight Sun\n");
     if (diurnalArc <=  0.0) printf ("Debug: sunriset.cpp: No rise or set: Polar Night\n");
