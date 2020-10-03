@@ -19,6 +19,7 @@ const double VERSION=0.8; // <<<<<<<<< CHANGE ME
 // IFC  2014-12-08  0.6  Add timezone handling for output - if required
 // IFC  2015-04-29  0.7  Timezone and DST fixes - and for date line timings
 // IFC  2015-05-27  0.8  Resolve 'dodgy day' and cleanup
+// TLJ  2020-10-03  0.9  Fix build on osx
 //
 
 #include <stdio.h>
@@ -34,7 +35,7 @@ const double VERSION=0.8; // <<<<<<<<< CHANGE ME
 #endif
 
 // Linux
-#if defined __linux__
+#if defined __linux__ || defined __APPLE__
   #include <unistd.h>
 #endif
 
@@ -395,7 +396,7 @@ void myUtcTime (const time_t *pTimet, struct tm *pTm)
     /* Windows code: End */
 
     /* Linux code: Start */
-      #if defined __linux__
+      #if defined __linux__ || defined __APPLE__
         gmtime_r (pTimet, pTm);
       #endif
     /* Linux code: End */
@@ -415,7 +416,7 @@ void myLocalTime (const time_t *pTimet, struct tm *pTm)
     /* Windows code: End */
 
     /* Linux code: Start */
-      #if defined __linux__
+      #if defined __linux__ || defined __APPLE__
         localtime_r (pTimet, pTm);
       #endif
     /* Linux code: End */
@@ -477,7 +478,7 @@ double getUtcBiasHours (const time_t *pTimet)
   /* Windows code: End */
 
   /* Linux code: Start */
-  #if defined __linux__
+  #if defined __linux__ || defined __APPLE__
     char buffer [80];
     signed long int tmpLong = 0;
 
@@ -1130,7 +1131,7 @@ int wait (const runStruct *pRun)
   /* Windows code: End */
 
   /* Linux code: Start */
-  #if defined __linux__
+  #if defined __linux__ || defined __APPLE__
     sleep (waitSeconds);    // Linux-only (seconds OK)
   #endif
   /* Linux code: End */
