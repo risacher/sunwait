@@ -13,8 +13,8 @@
 
 #define DEFAULT_LIST      1           /* in 'List' mode, report these number days */
 #define DEFAULT_ANGLE     0.83        /* Default twighlight angle. */
-#define DEFAULT_LATITUDE  52.952308 
-#define DEFAULT_LONGITUDE 359.048052  /* The Buttercross, Bingham, England */
+#define DEFAULT_LATITUDE  40.108306
+#define DEFAULT_LONGITUDE 271.7405121 /* 814 W Daniel St, Champaign, IL, USA */
 
 #define boolean bool
 #define NOT_SET 9999999
