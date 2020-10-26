@@ -92,7 +92,7 @@ void sunriset (const runStruct *pRun, targetStruct *pTarget)
   /* compute the diurnal arc that the sun traverses to reach the specified altitide altit: */
   double cost = (sind(altitude) - sind(pRun->latitude) * sind(sdec)) / (cosd(pRun->latitude) * cosd(sdec));
 
-  if (abs(cost) < 1.0)
+  if (abs(int(cost)) < 1.0)
     diurnalArc = 2*acosd(cost)/15.0;    /* Diurnal arc, hours */
   else if (cost>=1.0)
     diurnalArc =  0.0; // Polar Night
