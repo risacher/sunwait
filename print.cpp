@@ -203,11 +203,11 @@ void generate_report (const runStruct *pRun)
   , pRun->longitude
   );
   
-  strftime (buffer, 80, "%d-%b-%Y", &nowTm);
+  strftime (buffer, 80, "%d-%b-%Y", &targetTm);
   printf
   ("                       Date: %s\n", buffer);
 
-  strftime (buffer, 80, "%Z", &nowTm);
+  strftime (buffer, 80, "%Z", &targetTm);
   printf
   ("                   Timezone: %s\n", buffer);
 
