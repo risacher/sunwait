@@ -1,0 +1,5 @@
+# Return DAY or NIGHT
+sunwait poll 43.641488N 71.534851W
+
+# Wait for 10 minutes before sunset
+sunwait wait set offset 10 43.641488N 71.534851W
