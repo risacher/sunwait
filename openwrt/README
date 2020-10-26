@@ -1,0 +1,25 @@
+This Makefile can be used to build sunwait as a package for OpenWRT.
+
+Dependency: OpenWRT SDK
+
+Instructions:
+- Download the OpenWRT SDK for your platform from;
+https://downloads.openwrt.org/releases/xx.xx.x/targets/{platform}/generic/openwrt-sdk_*.tar.xz
+
+- Extract it to somewhere;
+tar -xf openwrt-sdk_*.Linux-x86_64.tar.xz
+
+- Enter the sdk root;
+cd openwrt-sdk_*.Linux-x86_64
+
+- Set it up;
+./scripts/feeds update -a
+
+- Copy the Makefile from this path into the sdk, at;
+{sdk root}/package/sunwait/Makefile
+
+- From the sdk root, build it;
+make package/sunwait/compile
+
+This will create the package that can be installed to your router.
+
