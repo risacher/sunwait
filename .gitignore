@@ -50,3 +50,12 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+/.vs
+/Debug
+/Release
+/*.vcxproj.filters
+/*.vcxproj.user
+/obj
+/x64
+*.tlog
+
