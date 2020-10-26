@@ -23,6 +23,6 @@ $(EXECUTABLE): $(OBJECTS)
 	$(C) $(CFLAGS) $< -o $@
 
 clean:
-	rm *.o sunwait
+	rm -f *.o sunwait
 
 
