@@ -662,7 +662,7 @@ int main (int argc, char *argv[])
     if (pRun->debug == ONOFF_ON) printf ("Debug: argv[%d]: >%s<\n", i, arg);
 
     // Strip any hyphen from arguments, but not negative signs of numbers
-    if (arg[0] == '-' && arg[1] != '\0' && !isdigit(arg[1])) *arg++;
+    if (arg[0] == '-' && arg[1] != '\0' && !isdigit(arg[1])) arg++;
 
     // Normal help or version info
          if   (!strcmp (arg, "v")             ||
