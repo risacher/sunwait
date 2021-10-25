@@ -12,7 +12,7 @@
 
 #include <stdio.h>
 #include <iostream>
-#include <math.h> 
+#include <math.h>
 #include <time.h>
 
 #include "sunwait.h"
@@ -68,7 +68,7 @@ void print_a_time
 ( const OnOff   pGmt_OnOff
 , const time_t *pMidnightTimet
 , const double  pEventHour
-) 
+)
 { struct tm tmpTm;
   char tmpBuffer [80];
 
@@ -94,7 +94,7 @@ void print_a_sun_time
 , const time_t *pMidnightTimet
 , const double  pEventHour
 , const double  pOffsetDiurnalArc
-) 
+)
 { // A positive offset reduces the diurnal arc
   if (pOffsetDiurnalArc <=  0.0 || pOffsetDiurnalArc >= 24.0)
     printf ("--:--");
@@ -106,12 +106,12 @@ void print_times
 ( const OnOff    pGmt
 , const OnOff    pSunrise
 , const OnOff    pSunset
-, const time_t   pMidnightTimet 
+, const time_t   pMidnightTimet
 , const double   pSouthHour
 , const double   pDiurnalArc
 , const double   pOffset
 , const char    *pSeparator
-) 
+)
 { double offsetDiurnalArc = diurnalArcWithOffset1 (pDiurnalArc, pOffset);
   double riseHour         = getOffsetRiseHourUTC1 (pSouthHour, pDiurnalArc, pOffset);
   double setHour          = getOffsetSetHourUTC1  (pSouthHour, pDiurnalArc, pOffset);
@@ -129,7 +129,7 @@ void print_times
   printf ("\n");
 }
 
-inline void print_times 
+inline void print_times
 ( const runStruct    *pRun
 , const targetStruct *pTarget
 , const double  pOffsetHour
@@ -150,18 +150,18 @@ inline void print_times
 inline void print_twilight
 ( const double pDayLength
 , const double pTwilightLength
-) 
-{ printf 
+)
+{ printf
   ( "%2.2d:%2.2d hours (twilight: %2.2d:%2.2d hours)\n"
   , hours (pDayLength),      minutes (pDayLength)
   , hours (pTwilightLength), minutes (pTwilightLength)
   );
-} 
+}
 
 void generate_report (const runStruct *pRun)
 {
   /*
-  ** Generate and save sunrise and sunset times for target 
+  ** Generate and save sunrise and sunset times for target
   */
 
   targetStruct tmpTarget;
@@ -173,7 +173,7 @@ void generate_report (const runStruct *pRun)
   double  twilightAngleTarget  = tmpTarget.twilightAngle;
 
   /*
-  ** Now generate the report 
+  ** Now generate the report
   */
 
   struct tm nowTm;
@@ -190,19 +190,19 @@ void generate_report (const runStruct *pRun)
   }
 
   printf ("\n");
-  
+
   strftime (buffer, 80, "%d-%b-%Y %H:%M %Z", &nowTm);
-  printf 
+  printf
   ("      Current Date and Time: %s\n", buffer);
 
   printf ("\n\nTarget Information ...\n\n");
 
-  printf 
+  printf
   ("                   Location: %10.6fN, %10.6fE\n"
   , pRun->latitude
   , pRun->longitude
   );
-  
+
   strftime (buffer, 80, "%d-%b-%Y", &targetTm);
   printf
   ("                       Date: %s\n", buffer);
@@ -231,14 +231,14 @@ void generate_report (const runStruct *pRun)
   else                                                             printf("             Twilight angle: %5.2f degrees (custom angle)\n", twilightAngleTarget);
 
   printf   ("          Day with twilight: "); print_times (pRun, &tmpTarget, NO_OFFSET, cTo);
-  
+
   if (pRun->offsetHour != NO_OFFSET)
   { printf (" Day with twilight & offset: "); print_times (pRun, &tmpTarget, pRun->offsetHour, cTo); }
 
   printf   ("                      It is: %s\n", isDay (pRun) == ONOFF_ON ? "Day (or twilight)" : "Night");
 
   /*
-  ** Generate times for different types of twilight 
+  ** Generate times for different types of twilight
   */
 
   targetStruct daylightTarget;

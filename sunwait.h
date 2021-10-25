@@ -26,7 +26,7 @@ typedef enum
 } OnOff;
 
 typedef struct
-{ 
+{
   double        latitude;            // Degrees N - Global position
   double        longitude;           // Degrees E - Global position
 
@@ -59,7 +59,7 @@ typedef struct
 } runStruct;
 
 typedef struct
-{ 
+{
   // "Input" data
   double        twilightAngle;       // Degrees. -ve = below horizon. Can be: daylight, civil, nautical, astronomical, or custom.
   unsigned long daysSince2000;       // The sunrise calculation needs this: days from start of 2000 to targetTimet

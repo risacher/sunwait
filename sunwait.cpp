@@ -70,9 +70,9 @@ void print_version ()
 }
 
 /*
-** It's very useful to have this here 
+** It's very useful to have this here
 */
-void print_usage () 
+void print_usage ()
 { printf ("Calculate sunrise and sunset times for the current or targetted day.\n");
   printf ("The times can be adjusted either for twilight or fixed durations.\n");
   printf ("\n");
@@ -150,7 +150,7 @@ void myToLower (char *arg)
 
 void myToLower (const int argc, char *argv[])
 { for (int i=1; i < argc; i++)
-    myToLower (argv [i]); 
+    myToLower (argv [i]);
 }
 
 boolean myIsNumber (const char *arg)
@@ -323,7 +323,7 @@ boolean isBearing (runStruct *pRun, const char *pArg)
       else if (compass == 'W') { bearing = 360 - bearing; compass = 'E'; }
 
       /* It's almost done, assign bearing to appropriate global */
-           if (compass == 'N') pRun->latitude  = fixLatitude  (bearing); 
+           if (compass == 'N') pRun->latitude  = fixLatitude  (bearing);
       else if (compass == 'E') pRun->longitude = fixLongitude (bearing);
       else return false;
       return true;  /* All done */
@@ -467,7 +467,7 @@ double getUtcBiasHours (const time_t *pTimet)
 
     utcBiasHours = (localNoonTm.tm_hour - utcNoonTm.tm_hour)
                  + (localNoonTm.tm_min  - utcNoonTm.tm_min) / 60.0;
-    
+
     // The day may be different between the two times, especially if the local timezone is near the dateline.
     // Rollover of tm_yday (from 365 to 0) is a further problem, but no bias is ever more than 24 hours - that wouldn't make sense.
 
@@ -546,7 +546,7 @@ time_t getMidnightUTC (const time_t *pTimet, const runStruct *pRun)
   tmpTm.tm_sec += myRound (pRun->utcBiasHours * 3600.0);
 
   // Let mktime() do it's magic
-  return mktime (&tmpTm);  
+  return mktime (&tmpTm);
 }
 
 /*
@@ -643,19 +643,19 @@ int main (int argc, char *argv[])
 
   /*
   **
-  ** Parse command line arguments 
+  ** Parse command line arguments
   **
   */
 
-  // Change to all lowercase, just to make life easier ... 
-  myToLower (argc, argv); 
+  // Change to all lowercase, just to make life easier ...
+  myToLower (argc, argv);
 
   // Look for debug being activated ...
   for (int i=1; i < argc; i++) if (!strcmp (argv [i], "debug")) pRun->debug = ONOFF_ON;
 
   // For each argument
   for (int i=1; i < argc; i++)
-  { 
+  {
     char *arg = argv[i];
 
     // Echo argument, if in debug
@@ -744,7 +744,7 @@ int main (int argc, char *argv[])
     else if   (!strcmp (arg, "m") && i+1<argc && myIsNumber (argv[i+1]))  monInt = atoi (argv [++i]); // Note: "++i"
     else if   (!strcmp (arg, "d") && i+1<argc && myIsNumber (argv[i+1])) mdayInt = atoi (argv [++i]); // Note: "++i"
 
-    // Specify fixed duration offset 
+    // Specify fixed duration offset
     else if   (!strcmp (arg, "o")             ||
                !strcmp (arg, "off")           ||
                !strcmp (arg, "offset"))       { if (i+1<argc && isOffset (pRun, argv[i+1])) { ++i; } /* Functionality in "isOffset()" */
@@ -820,7 +820,7 @@ int main (int argc, char *argv[])
 
     if (yearInt != NOT_SET)
     { if (yearInt < 0 || yearInt > 99)
-      { printf ("Error: \"Year\" must be between 0 and 99: %u\n", yearInt); 
+      { printf ("Error: \"Year\" must be between 0 and 99: %u\n", yearInt);
         exit (EXIT_ERROR);
       }
       targetTm.tm_year = yearInt + 100;
@@ -829,13 +829,13 @@ int main (int argc, char *argv[])
 
     if (monInt != NOT_SET)
     { if (monInt < 1 || monInt > 12)
-      { printf ("Error: \"Month\" must be between 1 and 12: %u\n", monInt); 
+      { printf ("Error: \"Month\" must be between 1 and 12: %u\n", monInt);
         exit (EXIT_ERROR);
       }
       targetTm.tm_mon = monInt-1; // We need month 0 to 11, not 1 to 12
     }
     if (pRun->debug == ONOFF_ON) printf ("Debug: Target   mon set to: %u\n", targetTm.tm_mon);
-  
+
     if (mdayInt != NOT_SET)
     { if (mdayInt < 1 || mdayInt > 31)
       { printf ("Error: \"Day of month\" must be between 1 and 31: %u\n", mdayInt);
@@ -844,7 +844,7 @@ int main (int argc, char *argv[])
       targetTm.tm_mday = mdayInt;
     }
     if (pRun->debug == ONOFF_ON) printf ("Debug: Target  mday set to: %u\n", targetTm.tm_mday);
-  
+
     // Set target time to the start of the UTC day
     targetTm.tm_hour = 0;
     targetTm.tm_min  = 0;
@@ -856,7 +856,7 @@ int main (int argc, char *argv[])
     targetTm.tm_isdst = -1;  // -1 means: mktime() must work it out. 0=DST not in effect. 1=DST in effect. (Daylight Savings)
 
     // Convert target "struct tm" to time_t.  It'll be set to midnight local time, on the target day.
-    pRun->targetTimet = mktime (&targetTm);  
+    pRun->targetTimet = mktime (&targetTm);
 
     // Shave off (add) UTC offset, so that time_t is converted from midnight local-time to midnight UTC on the target day
     targetTm.tm_sec += myRound (pRun->utcBiasHours * 60.0 * 60.0);
@@ -884,12 +884,12 @@ int main (int argc, char *argv[])
   */
 
   if (pRun->latitude == NOT_SET)
-  { if (pRun->debug == ONOFF_ON) printf ("Debug: latitude not set. Default applied.\n"); 
+  { if (pRun->debug == ONOFF_ON) printf ("Debug: latitude not set. Default applied.\n");
     pRun->latitude  = DEFAULT_LATITUDE; /* The Buttercross, Bingham, England */
   }
 
-  if (pRun->longitude == NOT_SET) 
-  { if (pRun->debug == ONOFF_ON) printf ("Debug: longitude not set. Default applied.\n"); 
+  if (pRun->longitude == NOT_SET)
+  { if (pRun->debug == ONOFF_ON) printf ("Debug: longitude not set. Default applied.\n");
     pRun->longitude = DEFAULT_LONGITUDE; /* The Buttercross, Bingham, England */
   }
 
@@ -903,7 +903,7 @@ int main (int argc, char *argv[])
   }
 
   /*
-  ** Check: Twilight Angle 
+  ** Check: Twilight Angle
   */
 
   if (pRun->twilightAngle == NOT_SET)
@@ -937,7 +937,7 @@ int main (int argc, char *argv[])
   */
 
   // IF no function requested THEN default to "usage"
-  if 
+  if
   (  pRun->functionList    == ONOFF_OFF
   && pRun->functionPoll    == ONOFF_OFF
   && pRun->functionUsage   == ONOFF_OFF
@@ -959,38 +959,38 @@ int main (int argc, char *argv[])
   ** OK - we're all done figuring out what to do - let's do it
   */
 
-  if (pRun->functionVersion == ONOFF_ON) 
+  if (pRun->functionVersion == ONOFF_ON)
   { if (pRun->debug == ONOFF_ON) printf ("Debug: Function selected: Version\n");
-    print_version (); 
-    exitCode = EXIT_OK; 
+    print_version ();
+    exitCode = EXIT_OK;
   }
 
-  if (pRun->functionUsage == ONOFF_ON) 
+  if (pRun->functionUsage == ONOFF_ON)
   { if (pRun->debug == ONOFF_ON) printf ("Debug: Function selected: Usage\n");
-    print_usage (); 
-    exitCode = EXIT_OK; 
+    print_usage ();
+    exitCode = EXIT_OK;
   }
 
   if (pRun->functionReport == ONOFF_ON)
   { if (pRun->debug == ONOFF_ON) printf ("Debug: Function selected: Report\n");
     generate_report (pRun);
-    exitCode = EXIT_OK; 
+    exitCode = EXIT_OK;
   }
 
-  if (pRun->functionList == ONOFF_ON)  
+  if (pRun->functionList == ONOFF_ON)
   { if (pRun->debug == ONOFF_ON) printf ("Debug: Function selected: List\n");
-    print_list (pRun);  
-    exitCode = EXIT_OK; 
+    print_list (pRun);
+    exitCode = EXIT_OK;
   }
 
   if (pRun->functionWait == ONOFF_ON)
   { if (pRun->debug == ONOFF_ON) printf ("Debug: Function selected: Wait\n");
-    exitCode = wait (pRun); 
+    exitCode = wait (pRun);
   }
 
-  if (pRun->functionPoll == ONOFF_ON)  
+  if (pRun->functionPoll == ONOFF_ON)
   { if (pRun->debug == ONOFF_ON) printf ("Debug: Function selected: Poll\n");
-    exitCode = poll (pRun); 
+    exitCode = poll (pRun);
          if (exitCode == EXIT_DAY)   printf ("DAY\n");
     else if (exitCode == EXIT_NIGHT) printf ("NIGHT\n");
     else if (exitCode == EXIT_OK)    printf ("OK\n");
@@ -1019,7 +1019,7 @@ int wait (const runStruct *pRun)
 {
   /*
   ** Calculate start/end of twilight for given twilight type/angle.
-  ** For latitudes near poles, the sun might not pass through specified twilight angle that day. 
+  ** For latitudes near poles, the sun might not pass through specified twilight angle that day.
   ** For big longitudes, it's quite likely the sun is up at midnight UTC: this means we have to calculate successive days.
   */
 
@@ -1054,7 +1054,7 @@ int wait (const runStruct *pRun)
   long waitRiseTomorrow  = waitMidnightUTC + static_cast <long> ( 3600.0 * getOffsetRiseHourUTC (pRun, &tomorrow)  );
   long waitSetTomorrow   = waitMidnightUTC + static_cast <long> ( 3600.0 * getOffsetSetHourUTC  (pRun, &tomorrow)  );
 
-  // Determine next sunrise and sunset 
+  // Determine next sunrise and sunset
   // (we may be in DAY, so the next event is sunset - followed by sunrise)
 
   long waitRiseSeconds = 0;
@@ -1086,7 +1086,7 @@ int wait (const runStruct *pRun)
   else if (waitSetToday     > 0) { double diurnalArc = diurnalArcWithOffset (pRun, &today);     exitPolar = diurnalArc <= 0.0 || diurnalArc >= 24.0; }
   else                           { double diurnalArc = diurnalArcWithOffset (pRun, &tomorrow);  exitPolar = diurnalArc <= 0.0 || diurnalArc >= 24.0; }
 
-  if (exitPolar) 
+  if (exitPolar)
   { if (pRun->debug == ONOFF_ON) printf ("Debug: Polar region or large offset: No sunrise today, there's nothing to wait for!\n");
     return EXIT_ERROR;
   }
@@ -1104,7 +1104,7 @@ int wait (const runStruct *pRun)
   { waitSeconds = waitRiseSeconds < waitSetSeconds ? waitRiseSeconds : waitSetSeconds; }
 
   // Don't wait if event has passed (or next going to occur soon [6hrs])
-  if (waitSeconds <= 0) 
+  if (waitSeconds <= 0)
   { if (pRun->debug == ONOFF_ON) printf ("Debug: Event already passed today, can't wait for that!\n");
     return EXIT_ERROR;
   }
@@ -1118,7 +1118,7 @@ int wait (const runStruct *pRun)
     waitSeconds = 10;
   }
   else if (pRun->functionPoll == ONOFF_ON) waitSeconds += 60; // Make more sure that a subsequent POLL works properly (wink ;-)
-  
+
   /*
   ** Sleep (wait) until the event is expected
   */

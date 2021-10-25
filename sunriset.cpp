@@ -150,10 +150,10 @@ void sun_RA_dec (const double d, double *RA, double *dec, double *r)
   double lon, obl_ecl;
   double xs, ys, zs;
   double xe, ye, ze;
-  
+
   /* Compute Sun's ecliptical coordinates */
   sunpos (d, &lon, r);
-  
+
   /* Compute ecliptic rectangular coordinates */
   xs = *r * cosd(lon);
   ys = *r * sind(lon);
@@ -161,12 +161,12 @@ void sun_RA_dec (const double d, double *RA, double *dec, double *r)
 
   /* Compute obliquity of ecliptic (inclination of Earth's axis) */
   obl_ecl = 23.4393 - 3.563E-7 * d;
-  
+
   /* Convert to equatorial rectangular coordinates - x is unchanged */
   xe = xs;
   ye = ys * cosd(obl_ecl);
   ze = ys * sind(obl_ecl);
-  
+
   /* Convert to spherical coordinates */
   *RA = atan2d(ye, xe);
   *dec = atan2d(ze, sqrt(xe*xe + ye*ye));
@@ -204,7 +204,7 @@ double fixLatitude (const double x)
   else if (y <= (double) 270.0) y = (double) 180.0 - y;
   else if (y <= (double) 360.0) y = y - (double) 360.0;
 
-  // Linux compile of sunwait doesn't like 90, Windows is OK. 
+  // Linux compile of sunwait doesn't like 90, Windows is OK.
   // Let's just wiggle things a little bit to make things OK.
        if (y == (double)  90.0) y = (double)  89.9999999;
   else if (y == (double) -90.0) y = (double) -89.9999999;
@@ -261,11 +261,11 @@ unsigned long daysSince2000 (const time_t *pTimet)
   struct tm tmpTm;
 
   myUtcTime (pTimet, &tmpTm);
-  
+
   unsigned int yearsSince2000 = tmpTm.tm_year - 100; // Get year, but tm_year starts from 1900
 
   // Calucate number of leap days, but -
-  //   yearsSince2000 - 1 
+  //   yearsSince2000 - 1
   // Don't include this year as tm_yday includes this year's leap day in the next bit
 
   unsigned int leapDaysSince2000
