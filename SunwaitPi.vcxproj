@@ -74,9 +74,9 @@
     <None Include="LICENSE" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="print.cpp" />
-    <ClCompile Include="sunriset.cpp" />
-    <ClCompile Include="sunwait.cpp" />
+    <ClCompile Include="print.c" />
+    <ClCompile Include="sunriset.c" />
+    <ClCompile Include="sunwait.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="print.h" />

@@ -17,15 +17,12 @@
 */
 
 #include <stdio.h>
-#include <stdlib.h> // Linux
-#include <iostream>
+#include <stdlib.h>
 #include <math.h>
 #include <time.h>
 
 #include "sunwait.h"
 #include "sunriset.h"
-
-using namespace std;
 
 /************************************************************************/
 /* Note: Eastern longitude positive, Western longitude negative         */
@@ -92,7 +89,7 @@ void sunriset (const runStruct *pRun, targetStruct *pTarget)
   /* compute the diurnal arc that the sun traverses to reach the specified altitide altit: */
   double cost = (sind(altitude) - sind(pRun->latitude) * sind(sdec)) / (cosd(pRun->latitude) * cosd(sdec));
 
-  if (abs(int(cost)) < 1.0)
+  if (abs((int) cost) < 1)
     diurnalArc = 2*acosd(cost)/15.0;    /* Diurnal arc, hours */
   else if (cost>=1.0)
     diurnalArc =  0.0; // Polar Night
@@ -100,10 +97,10 @@ void sunriset (const runStruct *pRun, targetStruct *pTarget)
     diurnalArc = 24.0; // Midnight Sun
 
   if (pRun->debug == ONOFF_ON)
-  { printf ("Debug: sunriset.cpp: Sun directly south: %f UTC, Diurnal Arc = %f hours\n", southHour, diurnalArc);
-    printf ("Debug: sunriset.cpp: Days since 2000: %li\n", pTarget->daysSince2000);
-    if (diurnalArc >= 24.0) printf ("Debug: sunriset.cpp: No rise or set: Midnight Sun\n");
-    if (diurnalArc <=  0.0) printf ("Debug: sunriset.cpp: No rise or set: Polar Night\n");
+  { printf ("Debug: sunriset.c: Sun directly south: %f UTC, Diurnal Arc = %f hours\n", southHour, diurnalArc);
+    printf ("Debug: sunriset.c: Days since 2000: %li\n", pTarget->daysSince2000);
+    if (diurnalArc >= 24.0) printf ("Debug: sunriset.c: No rise or set: Midnight Sun\n");
+    if (diurnalArc <=  0.0) printf ("Debug: sunriset.c: No rise or set: Polar Night\n");
   }
 
   // Error Check - just make sure odd things don't happen (causing trouble further on)

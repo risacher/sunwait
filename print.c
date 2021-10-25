@@ -1,6 +1,6 @@
 
 /*
-** print.cpp  (of sunwait)
+** print.c (of sunwait)
 **
 ** Who Ver   When        What
 ** IFC  0.5  04-12-2014  Fix my 1st release of sunwait for windows and port to linux
@@ -11,7 +11,6 @@
 */
 
 #include <stdio.h>
-#include <iostream>
 #include <math.h>
 #include <time.h>
 
@@ -23,14 +22,6 @@ static const char* cTo    = " to ";
 static const char* cComma = ", ";
 
 #define NO_OFFSET 0.0
-
-inline double myDayLength (const double pDouble1, const double pDouble2)
-{ return myAbs (pDouble1 - pDouble2);
-}
-
-inline double myDayLength (const targetStruct *pTarget)
-{ return pTarget->diurnalArc;
-}
 
 // The user-specified offset reduces the diurnal arc, at sunrise AND sunset.
 // But make sure dawn aways is before dusk. The offset can mess that up.
@@ -103,48 +94,26 @@ void print_a_sun_time
 }
 
 void print_times
-( const OnOff    pGmt
-, const OnOff    pSunrise
-, const OnOff    pSunset
-, const time_t   pMidnightTimet
-, const double   pSouthHour
-, const double   pDiurnalArc
-, const double   pOffset
-, const char    *pSeparator
-)
-{ double offsetDiurnalArc = diurnalArcWithOffset1 (pDiurnalArc, pOffset);
-  double riseHour         = getOffsetRiseHourUTC1 (pSouthHour, pDiurnalArc, pOffset);
-  double setHour          = getOffsetSetHourUTC1  (pSouthHour, pDiurnalArc, pOffset);
-
-  if (pSunrise == ONOFF_ON)
-    print_a_sun_time (pGmt, &pMidnightTimet, riseHour, offsetDiurnalArc);
-  if (pSunrise == ONOFF_ON && pSunset == ONOFF_ON)
-    printf ("%s", pSeparator);
-  if (pSunset  == ONOFF_ON)
-    print_a_sun_time (pGmt, &pMidnightTimet, setHour, offsetDiurnalArc);
-
-       if (offsetDiurnalArc >= 24.0) printf (" (Midnight sun)");
-  else if (offsetDiurnalArc <=  0.0) printf (" (Polar night)");
-
-  printf ("\n");
-}
-
-inline void print_times
 ( const runStruct    *pRun
 , const targetStruct *pTarget
 , const double  pOffsetHour
 , const char   *pSeparator
 )
-{ print_times
-  ( pRun->utc
-  , pRun->reportSunrise
-  , pRun->reportSunset
-  , pRun->targetTimet
-  , pTarget->southHourUTC
-  , pTarget->diurnalArc
-  , pOffsetHour
-  , pSeparator
-  );
+{ double offsetDiurnalArc = diurnalArcWithOffset1 (pTarget->diurnalArc, pOffsetHour);
+  double riseHour         = getOffsetRiseHourUTC1 (pTarget->southHourUTC, pTarget->diurnalArc, pOffsetHour);
+  double setHour          = getOffsetSetHourUTC1  (pTarget->southHourUTC, pTarget->diurnalArc, pOffsetHour);
+
+  if (pRun->reportSunrise == ONOFF_ON)
+    print_a_sun_time (pRun->utc, &pRun->targetTimet, riseHour, offsetDiurnalArc);
+  if (pRun->reportSunrise == ONOFF_ON && pRun->reportSunset == ONOFF_ON)
+    printf ("%s", pSeparator);
+  if (pRun->reportSunset  == ONOFF_ON)
+    print_a_sun_time (pRun->utc, &pRun->targetTimet, setHour, offsetDiurnalArc);
+
+       if (offsetDiurnalArc >= 24.0) printf (" (Midnight sun)");
+  else if (offsetDiurnalArc <=  0.0) printf (" (Polar night)");
+
+  printf ("\n");
 }
 
 inline void print_twilight

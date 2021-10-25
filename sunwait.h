@@ -84,8 +84,8 @@ void myLocalTime (const time_t * ptrTimet, struct tm * ptrTm);
 
 OnOff isDay (const runStruct *pRun);
 
-int poll (const runStruct *pRun);
-int wait (const runStruct *pRun);
+int sunpoll (const runStruct *pRun);
+int sunwait (const runStruct *pRun);
 
 
 #endif

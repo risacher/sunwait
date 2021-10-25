@@ -7,19 +7,19 @@
 
 
 C=gcc
-CFLAGS=-c -Wall 
-LDFLAGS= -lm -lstdc++
-SOURCES=sunwait.cpp sunriset.cpp print.cpp
+CFLAGS=-c -Wall
+LDFLAGS= -lm
+SOURCES=sunwait.c sunriset.c print.c
 HEADERS=sunwait.h sunriset.h print.h
-OBJECTS=$(SOURCES:.cpp=.o)
+OBJECTS=$(SOURCES:.c=.o)
 EXECUTABLE=sunwait
 
 all: $(SOURCES) $(EXECUTABLE)
-	
+
 $(EXECUTABLE): $(OBJECTS)
 	$(C) $(OBJECTS) -o $@ $(LDFLAGS)
 
-.cpp.o:
+.c.o:
 	$(C) $(CFLAGS) $< -o $@
 
 clean:

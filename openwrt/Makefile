@@ -17,7 +17,7 @@ define Package/sunwait
 	CATEGORY:=Utilities
 	TITLE:=Sunwait
 	URL:=URL:=https://github.com/risacher/sunwait
-	DEPENDS:=+libstdcpp +libc
+	DEPENDS:=+libc
 endef
 
 define Package/sunwait/description
@@ -25,10 +25,10 @@ define Package/sunwait/description
 endef
 
 define Build/Compile
-	$(TARGET_CC) $(TARGET_CPPFLAGS) -o $(PKG_BUILD_DIR)/sunwait.o -c $(PKG_BUILD_DIR)/sunwait.cpp
-	$(TARGET_CC) $(TARGET_CPPFLAGS) -o $(PKG_BUILD_DIR)/sunriset.o -c $(PKG_BUILD_DIR)/sunriset.cpp
-	$(TARGET_CC) $(TARGET_CPPFLAGS) -o $(PKG_BUILD_DIR)/print.o -c $(PKG_BUILD_DIR)/print.cpp
-	$(TARGET_CC) $(TARGET_LDFLAGS) -o $(PKG_BUILD_DIR)/$1 $(PKG_BUILD_DIR)/sunwait.o $(PKG_BUILD_DIR)/sunriset.o $(PKG_BUILD_DIR)/print.o -lm -lstdc++
+	$(TARGET_CC) $(TARGET_CPPFLAGS) -o $(PKG_BUILD_DIR)/sunwait.o -c $(PKG_BUILD_DIR)/sunwait.c
+	$(TARGET_CC) $(TARGET_CPPFLAGS) -o $(PKG_BUILD_DIR)/sunriset.o -c $(PKG_BUILD_DIR)/sunriset.c
+	$(TARGET_CC) $(TARGET_CPPFLAGS) -o $(PKG_BUILD_DIR)/print.o -c $(PKG_BUILD_DIR)/print.c
+	$(TARGET_CC) $(TARGET_LDFLAGS) -o $(PKG_BUILD_DIR)/$1 $(PKG_BUILD_DIR)/sunwait.o $(PKG_BUILD_DIR)/sunriset.o $(PKG_BUILD_DIR)/print.o -lm
 endef
 
 define Package/sunwait/install

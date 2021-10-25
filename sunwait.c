@@ -1,4 +1,4 @@
-// sunwait.cpp : Defines the entry point for the console application.
+// sunwait.c: Defines the entry point for the console application.
 //
 
 // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv CHANGE ME
@@ -24,10 +24,11 @@ const double VERSION=0.8; // <<<<<<<<< CHANGE ME
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <iostream>
+#include <string.h>
+#include <ctype.h>
 #include <time.h>
-#include <cstring>
 #include <math.h>
+#include <stdbool.h>
 
 // Windows
 #if defined _WIN32 || defined _WIN64
@@ -46,9 +47,6 @@ const double VERSION=0.8; // <<<<<<<<< CHANGE ME
 #include "sunwait.h"
 #include "sunriset.h"
 #include "print.h"
-
-using namespace std;
-
 
 /*
 ** Define global:
@@ -147,14 +145,14 @@ void print_usage ()
   printf ("\n");
 }
 
-void myToLower (char *arg)
+void stringToLower (char *arg)
 { for (unsigned int i=0; i < strlen (arg); i++)
     arg[i] = tolower (arg[i]);
 }
 
-void myToLower (const int argc, char *argv[])
+void stringsToLower (const int argc, char *argv[])
 { for (int i=1; i < argc; i++)
-    myToLower (argv [i]);
+    stringToLower (argv [i]);
 }
 
 boolean myIsNumber (const char *arg)
@@ -228,50 +226,6 @@ boolean myIsSignedFloat (const char *arg)
     }
   }
   return false; /* Shouldn't get here */
-}
-
-boolean myIsSignedFloat (const char *pArg, double *pDouble)
-{ double number = 0;
-  int    exponent = 0;
-  bool   negative = false;
-  bool   exponentSet = false;
-  for (int i=0; ; i++)
-  { switch (pArg[i])
-    {
-    case '0': number = (number*10) + 0; exponentSet?exponent++:true; break;
-    case '1': number = (number*10) + 1; exponentSet?exponent++:true; break;
-    case '2': number = (number*10) + 2; exponentSet?exponent++:true; break;
-    case '3': number = (number*10) + 3; exponentSet?exponent++:true; break;
-    case '4': number = (number*10) + 4; exponentSet?exponent++:true; break;
-    case '5': number = (number*10) + 5; exponentSet?exponent++:true; break;
-    case '6': number = (number*10) + 6; exponentSet?exponent++:true; break;
-    case '7': number = (number*10) + 7; exponentSet?exponent++:true; break;
-    case '8': number = (number*10) + 8; exponentSet?exponent++:true; break;
-    case '9': number = (number*10) + 9; exponentSet?exponent++:true; break;
-    case '.': case ',':
-      exponentSet = true;
-      exponent = 0; // May be: N36.513679 (not right, but it'll do)
-      break;
-    case '+':
-      if (i>0) return false; // Sign only at start
-      negative = false;
-      break;
-    case '-':
-      if (i>0) return false; // Sign only at start
-      negative = true;
-      break;
-    case '\0': /* Exit */
-      /* Place decimal point in number */
-      if (exponentSet && exponent > 0) number = number / pow (10, (double) exponent);
-      if (negative) number = -number;
-      *pDouble = number;
-      return true; /* All done */
-      break;
-    default:
-      return false;
-    }
-  }
-  return false; /* Shouldn't get to here */
 }
 
 boolean isBearing (runStruct *pRun, const char *pArg)
@@ -652,7 +606,7 @@ int main (int argc, char *argv[])
   */
 
   // Change to all lowercase, just to make life easier ...
-  myToLower (argc, argv);
+  stringsToLower (argc, argv);
 
   // Look for debug being activated ...
   for (int i=1; i < argc; i++) if (!strcmp (argv [i], "debug")) pRun->debug = ONOFF_ON;
@@ -989,12 +943,12 @@ int main (int argc, char *argv[])
 
   if (pRun->functionWait == ONOFF_ON)
   { if (pRun->debug == ONOFF_ON) printf ("Debug: Function selected: Wait\n");
-    exitCode = wait (pRun);
+    exitCode = sunwait (pRun);
   }
 
   if (pRun->functionPoll == ONOFF_ON)
   { if (pRun->debug == ONOFF_ON) printf ("Debug: Function selected: Poll\n");
-    exitCode = poll (pRun);
+    exitCode = sunpoll (pRun);
          if (exitCode == EXIT_DAY)   printf ("DAY\n");
     else if (exitCode == EXIT_NIGHT) printf ("NIGHT\n");
     else if (exitCode == EXIT_OK)    printf ("OK\n");
@@ -1007,7 +961,7 @@ int main (int argc, char *argv[])
 /*
 ** Simply check if we think now/current-time is night OR day (day includes twilight)
 */
-inline int poll (const runStruct *pRun)
+inline int sunpoll (const runStruct *pRun)
 { return isDay (pRun) == ONOFF_ON ? EXIT_DAY : EXIT_NIGHT;
 }
 
@@ -1019,7 +973,7 @@ inline int poll (const runStruct *pRun)
 ** A user-specified offset messes around with daylength too.
 ** Exit immediately if its a polar day or midnight sun (including offset).
 */
-int wait (const runStruct *pRun)
+int sunwait (const runStruct *pRun)
 {
   /*
   ** Calculate start/end of twilight for given twilight type/angle.
@@ -1047,16 +1001,16 @@ int wait (const runStruct *pRun)
    tomorrow.southHourUTC += 24;
 
   // Calculate duration (seconds) from "now" to "midnight UTC on the target day". [difftime (end, beginning)]
-  long waitMidnightUTC = static_cast <long> (difftime (pRun->targetTimet, pRun->nowTimet));
+  long waitMidnightUTC = (long) (difftime (pRun->targetTimet, pRun->nowTimet));
 
   // Calculate duration to wait for each day's rise and set (seconds)
   // (targetTimet is set to midnight on the target day)
-  long waitRiseYesterday = waitMidnightUTC + static_cast <long> ( 3600.0 * getOffsetRiseHourUTC (pRun, &yesterday) );
-  long waitSetYesterday  = waitMidnightUTC + static_cast <long> ( 3600.0 * getOffsetSetHourUTC  (pRun, &yesterday) );
-  long waitRiseToday     = waitMidnightUTC + static_cast <long> ( 3600.0 * getOffsetRiseHourUTC (pRun, &today)     );
-  long waitSetToday      = waitMidnightUTC + static_cast <long> ( 3600.0 * getOffsetSetHourUTC  (pRun, &today)     );
-  long waitRiseTomorrow  = waitMidnightUTC + static_cast <long> ( 3600.0 * getOffsetRiseHourUTC (pRun, &tomorrow)  );
-  long waitSetTomorrow   = waitMidnightUTC + static_cast <long> ( 3600.0 * getOffsetSetHourUTC  (pRun, &tomorrow)  );
+  long waitRiseYesterday = waitMidnightUTC + (long) ( 3600.0 * getOffsetRiseHourUTC (pRun, &yesterday) );
+  long waitSetYesterday  = waitMidnightUTC + (long) ( 3600.0 * getOffsetSetHourUTC  (pRun, &yesterday) );
+  long waitRiseToday     = waitMidnightUTC + (long) ( 3600.0 * getOffsetRiseHourUTC (pRun, &today)     );
+  long waitSetToday      = waitMidnightUTC + (long) ( 3600.0 * getOffsetSetHourUTC  (pRun, &today)     );
+  long waitRiseTomorrow  = waitMidnightUTC + (long) ( 3600.0 * getOffsetRiseHourUTC (pRun, &tomorrow)  );
+  long waitSetTomorrow   = waitMidnightUTC + (long) ( 3600.0 * getOffsetSetHourUTC  (pRun, &tomorrow)  );
 
   // Determine next sunrise and sunset
   // (we may be in DAY, so the next event is sunset - followed by sunrise)
