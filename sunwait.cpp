@@ -32,11 +32,15 @@ const double VERSION=0.8; // <<<<<<<<< CHANGE ME
 // Windows
 #if defined _WIN32 || defined _WIN64
   #include <windows.h>
-#endif
 
 // Linux
-#if defined __linux__ || defined __APPLE__
+#elif defined __linux__ || defined __APPLE__ || defined __unix__
   #include <unistd.h>
+
+#else
+// die with an error - otherwise, the compilation will appear to succeed, but
+// the resulting program will not work correctly
+#error "Unsupported platform"
 #endif
 
 #include "sunwait.h"
@@ -396,7 +400,7 @@ void myUtcTime (const time_t *pTimet, struct tm *pTm)
     /* Windows code: End */
 
     /* Linux code: Start */
-      #if defined __linux__ || defined __APPLE__
+      #if defined __linux__ || defined __APPLE__ || defined __unix__
         gmtime_r (pTimet, pTm);
       #endif
     /* Linux code: End */
@@ -416,7 +420,7 @@ void myLocalTime (const time_t *pTimet, struct tm *pTm)
     /* Windows code: End */
 
     /* Linux code: Start */
-      #if defined __linux__ || defined __APPLE__
+      #if defined __linux__ || defined __APPLE__ || defined __unix__
         localtime_r (pTimet, pTm);
       #endif
     /* Linux code: End */
@@ -478,7 +482,7 @@ double getUtcBiasHours (const time_t *pTimet)
   /* Windows code: End */
 
   /* Linux code: Start */
-  #if defined __linux__ || defined __APPLE__
+  #if defined __linux__ || defined __APPLE__ || defined __unix__
     char buffer [80];
     signed long int tmpLong = 0;
 
@@ -1131,7 +1135,7 @@ int wait (const runStruct *pRun)
   /* Windows code: End */
 
   /* Linux code: Start */
-  #if defined __linux__ || defined __APPLE__
+  #if defined __linux__ || defined __APPLE__ || defined __unix__
     sleep (waitSeconds);    // Linux-only (seconds OK)
   #endif
   /* Linux code: End */
