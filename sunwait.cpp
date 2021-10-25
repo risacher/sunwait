@@ -62,10 +62,10 @@ void print_version ()
   printf ("Code Contributors: P.Schlyter, D.Risacher, D.MacMillan and I.Craig.\n");
   printf ("\n");
   printf (" Sunset is the instant at which the upper edge of the Sun disappears below the horizon.\n");
-  printf (" Civil twilight is the period from sunset until the geometric centre of the sun is 6° below the horizon.\n");
-  printf (" Nautical twilight is the period when the geometric centre of the sun is between 6° and 12° below the horizon.\n");
-  printf (" Astronomical twilight is the period when the geometric centre of the sun is between 12° and 18° below the horizon.\n");
-  printf (" Night is period when the geometric center of the sun falls 18° below the horizon.\n");
+  printf (" Civil twilight is the period from sunset until the geometric centre of the sun is 6Â° below the horizon.\n");
+  printf (" Nautical twilight is the period when the geometric centre of the sun is between 6Â° and 12Â° below the horizon.\n");
+  printf (" Astronomical twilight is the period when the geometric centre of the sun is between 12Â° and 18Â° below the horizon.\n");
+  printf (" Night is period when the geometric center of the sun falls 18Â° below the horizon.\n");
 
 }
 
