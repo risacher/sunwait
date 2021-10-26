@@ -116,17 +116,6 @@ void print_times
   printf ("\n");
 }
 
-inline void print_twilight
-( const double pDayLength
-, const double pTwilightLength
-)
-{ printf
-  ( "%2.2d:%2.2d hours (twilight: %2.2d:%2.2d hours)\n"
-  , hours (pDayLength),      minutes (pDayLength)
-  , hours (pTwilightLength), minutes (pTwilightLength)
-  );
-}
-
 void generate_report (const runStruct *pRun)
 {
   /*

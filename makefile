@@ -7,7 +7,7 @@
 
 
 C=gcc
-CFLAGS=-c -Wall
+CFLAGS=-c -Wall -std=c99 -O2 -Wextra -pedantic
 LDFLAGS= -lm
 SOURCES=sunwait.c sunriset.c print.c
 HEADERS=sunwait.h sunriset.h print.h

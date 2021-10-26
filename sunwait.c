@@ -962,7 +962,8 @@ int main (int argc, char *argv[])
 ** Simply check if we think now/current-time is night OR day (day includes twilight)
 */
 inline int sunpoll (const runStruct *pRun)
-{ return isDay (pRun) == ONOFF_ON ? EXIT_DAY : EXIT_NIGHT;
+{
+  return isDay (pRun) == ONOFF_ON ? EXIT_DAY : EXIT_NIGHT;
 }
 
 /*
