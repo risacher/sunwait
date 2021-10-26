@@ -16,7 +16,6 @@
 #define DEFAULT_LATITUDE  40.108306
 #define DEFAULT_LONGITUDE 271.7427 /* South Side School, Champaign, IL, USA */
 
-#define boolean bool
 #define NOT_SET 9999999
 #define     SET 1111111
 

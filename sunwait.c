@@ -155,7 +155,7 @@ static void stringsToLower (const int argc, char *argv[])
     stringToLower (argv [i]);
 }
 
-static boolean myIsNumber (const char *arg)
+static bool myIsNumber (const char *arg)
 { bool digitSet = false;
   for (int i=0; ; i++)
   { switch (arg[i])
@@ -179,7 +179,7 @@ static boolean myIsNumber (const char *arg)
   return false; /* Shouldn't get here */
 }
 
-static boolean myIsSignedNumber (const char *arg)
+static bool myIsSignedNumber (const char *arg)
 { bool digitSet = false;
   for (int i=0; ; i++)
   { switch (arg[i])
@@ -203,7 +203,7 @@ static boolean myIsSignedNumber (const char *arg)
   return false; /* Shouldn't get here */
 }
 
-static boolean myIsSignedFloat (const char *arg)
+static bool myIsSignedFloat (const char *arg)
 { bool digitSet = false;
   for (int i=0; ; i++)
   { switch (arg[i])
@@ -228,7 +228,7 @@ static boolean myIsSignedFloat (const char *arg)
   return false; /* Shouldn't get here */
 }
 
-static boolean isBearing (runStruct *pRun, const char *pArg)
+static bool isBearing (runStruct *pRun, const char *pArg)
 { double bearing = 0;
   int    exponent = 0;
   bool   negativeBearing = false;
@@ -293,7 +293,7 @@ static boolean isBearing (runStruct *pRun, const char *pArg)
   return false; /* Shouldn't get to here */
 }
 
-static boolean isOffset (runStruct *pRun, const char *pArg)
+static bool isOffset (runStruct *pRun, const char *pArg)
 { int    colon = 0, number0 = 0, number1 = 0, number2 = 0;
   bool   negativeOffset = false;
   double returnOffset = 0.0;
