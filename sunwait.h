@@ -87,5 +87,4 @@ OnOff isDay (const runStruct *pRun);
 int sunpoll (const runStruct *pRun);
 int sunwait (const runStruct *pRun);
 
-
 #endif

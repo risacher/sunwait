@@ -25,7 +25,7 @@ static const char* cComma = ", ";
 
 // The user-specified offset reduces the diurnal arc, at sunrise AND sunset.
 // But make sure dawn aways is before dusk. The offset can mess that up.
-double diurnalArcWithOffset1 (const double pDiurnalArc, const double pOffset)
+static double diurnalArcWithOffset1 (const double pDiurnalArc, const double pOffset)
 { double arcWithOffset = pDiurnalArc - pOffset - pOffset;
   if (arcWithOffset >= 24.0) return 24.0;
   if (arcWithOffset <=  0.0) return  0.0;
@@ -37,7 +37,7 @@ double diurnalArcWithOffset (const runStruct *pRun, const targetStruct *pTarget)
 }
 
 // What time, in hours UTC, is the offset sunrise?
-double getOffsetRiseHourUTC1 (const double pSouthHourUTC, const double pDiurnalArc, const double pOffsetHour)
+static double getOffsetRiseHourUTC1 (const double pSouthHourUTC, const double pDiurnalArc, const double pOffsetHour)
 { return pSouthHourUTC - diurnalArcWithOffset1 (pDiurnalArc, pOffsetHour)/2.0;
 }
 // Simpler to use form
@@ -46,7 +46,7 @@ double getOffsetRiseHourUTC (const runStruct *pRun, const targetStruct *pTarget)
 }
 
 // What time, in hours UTC, is the offset sunset?
-double getOffsetSetHourUTC1 (const double pSouthHourUTC, const double pDiurnalArc, const double pOffsetHour)
+static double getOffsetSetHourUTC1 (const double pSouthHourUTC, const double pDiurnalArc, const double pOffsetHour)
 { return pSouthHourUTC + diurnalArcWithOffset1 (pDiurnalArc, pOffsetHour)/2.0;
 }
 // Simpler to use form
@@ -55,7 +55,7 @@ double getOffsetSetHourUTC (const runStruct *pRun, const targetStruct *pTarget)
 }
 
 
-void print_a_time
+static void print_a_time
 ( const OnOff   pGmt_OnOff
 , const time_t *pMidnightTimet
 , const double  pEventHour
@@ -80,7 +80,7 @@ void print_a_time
   printf ("%s", tmpBuffer);
 }
 
-void print_a_sun_time
+static void print_a_sun_time
 ( const OnOff   pGmt_OnOff
 , const time_t *pMidnightTimet
 , const double  pEventHour
@@ -93,7 +93,7 @@ void print_a_sun_time
     print_a_time (pGmt_OnOff, pMidnightTimet, pEventHour);
 }
 
-void print_times
+static void print_times
 ( const runStruct    *pRun
 , const targetStruct *pTarget
 , const double  pOffsetHour

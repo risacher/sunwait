@@ -58,7 +58,7 @@ const double VERSION=0.8; // <<<<<<<<< CHANGE ME
 runStruct  gRun;
 runStruct *pRun;
 
-void print_version ()
+static void print_version ()
 {
   printf ("Sunwait for Windows. Version %f (IFC).\n", VERSION);
   printf ("Code Contributors: P.Schlyter, D.Risacher, D.MacMillan and I.Craig.\n");
@@ -74,7 +74,7 @@ void print_version ()
 /*
 ** It's very useful to have this here
 */
-void print_usage ()
+static void print_usage ()
 { printf ("Calculate sunrise and sunset times for the current or targetted day.\n");
   printf ("The times can be adjusted either for twilight or fixed durations.\n");
   printf ("\n");
@@ -145,17 +145,17 @@ void print_usage ()
   printf ("\n");
 }
 
-void stringToLower (char *arg)
+static void stringToLower (char *arg)
 { for (unsigned int i=0; i < strlen (arg); i++)
     arg[i] = tolower (arg[i]);
 }
 
-void stringsToLower (const int argc, char *argv[])
+static void stringsToLower (const int argc, char *argv[])
 { for (int i=1; i < argc; i++)
     stringToLower (argv [i]);
 }
 
-boolean myIsNumber (const char *arg)
+static boolean myIsNumber (const char *arg)
 { bool digitSet = false;
   for (int i=0; ; i++)
   { switch (arg[i])
@@ -179,7 +179,7 @@ boolean myIsNumber (const char *arg)
   return false; /* Shouldn't get here */
 }
 
-boolean myIsSignedNumber (const char *arg)
+static boolean myIsSignedNumber (const char *arg)
 { bool digitSet = false;
   for (int i=0; ; i++)
   { switch (arg[i])
@@ -203,7 +203,7 @@ boolean myIsSignedNumber (const char *arg)
   return false; /* Shouldn't get here */
 }
 
-boolean myIsSignedFloat (const char *arg)
+static boolean myIsSignedFloat (const char *arg)
 { bool digitSet = false;
   for (int i=0; ; i++)
   { switch (arg[i])
@@ -228,7 +228,7 @@ boolean myIsSignedFloat (const char *arg)
   return false; /* Shouldn't get here */
 }
 
-boolean isBearing (runStruct *pRun, const char *pArg)
+static boolean isBearing (runStruct *pRun, const char *pArg)
 { double bearing = 0;
   int    exponent = 0;
   bool   negativeBearing = false;
@@ -293,7 +293,7 @@ boolean isBearing (runStruct *pRun, const char *pArg)
   return false; /* Shouldn't get to here */
 }
 
-boolean isOffset (runStruct *pRun, const char *pArg)
+static boolean isOffset (runStruct *pRun, const char *pArg)
 { int    colon = 0, number0 = 0, number1 = 0, number2 = 0;
   bool   negativeOffset = false;
   double returnOffset = 0.0;
@@ -388,7 +388,7 @@ void myLocalTime (const time_t *pTimet, struct tm *pTm)
 ** Add the UTC bias to convert from local-time to UTC.
 ** ptrTm is set
 */
-double getUtcBiasHours (const time_t *pTimet)
+static double getUtcBiasHours (const time_t *pTimet)
 {
   struct tm utcTm;
   double utcBiasHours = 0.0;
@@ -457,7 +457,7 @@ double getUtcBiasHours (const time_t *pTimet)
 /*
 ** Debug: What's the time (include timezone)?
 */
-void myDebugTime (const char * pTitleChar, const time_t *pTimet)
+static void myDebugTime (const char * pTitleChar, const time_t *pTimet)
 { if (pRun->debug == ONOFF_ON)
   { struct tm tmpLocalTm, tmpUtcTm;
     char   utcBuffer [80];
@@ -484,7 +484,7 @@ void myDebugTime (const char * pTitleChar, const time_t *pTimet)
 ** In effect, this function is going to shave upto 24 hours off a time
 ** returning 00:00 UTC on the day given.
 */
-time_t getMidnightUTC (const time_t *pTimet, const runStruct *pRun)
+static time_t getMidnightUTC (const time_t *pTimet, const runStruct *pRun)
 { struct tm tmpTm;
 
   // Convert target "struct tm" to time_t.  It'll be set to midnight local time, on the target day.
@@ -961,7 +961,7 @@ int main (int argc, char *argv[])
 /*
 ** Simply check if we think now/current-time is night OR day (day includes twilight)
 */
-inline int sunpoll (const runStruct *pRun)
+int sunpoll (const runStruct *pRun)
 {
   return isDay (pRun) == ONOFF_ON ? EXIT_DAY : EXIT_NIGHT;
 }
