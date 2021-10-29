@@ -32,12 +32,23 @@ const double VERSION=0.8; // <<<<<<<<< CHANGE ME
 
 // Windows
 #if defined _WIN32 || defined _WIN64
-  #include <windows.h>
+#include <windows.h>
+
+static void sleepSeconds(unsigned int seconds)
+{
+  Sleep(1000u * seconds);
+}
 
 // Linux
 #elif defined __linux__ || defined __APPLE__ || defined __unix__
-  #include <unistd.h>
+#include <unistd.h>
 
+static void sleepSeconds(unsigned int seconds)
+{
+  while (seconds > 0u) {
+    seconds = sleep(seconds);
+  }
+}
 #else
 // die with an error - otherwise, the compilation will appear to succeed, but
 // the resulting program will not work correctly
@@ -341,52 +352,40 @@ static bool isOffset (runStruct *pRun, const char *pArg)
 
 
 /*
-** time_t converted to  struct tm. Using GMT (UTC) time.
+** time_t converted to struct tm. Using GMT (UTC) time.
 */
 void myUtcTime (const time_t *pTimet, struct tm *pTm)
 {
-    /* Windows code: Start */
-      #if defined _WIN32 || defined _WIN64
-        errno_t err;
-        err = _gmtime64_s (pTm, pTimet);
-        if (err) { printf ("Error: Invalid Argument to _gmtime64_s ().\n"); exit (EXIT_ERROR); }
-      #endif
-    /* Windows code: End */
+  struct tm *tms = gmtime(pTimet);
 
-    /* Linux code: Start */
-      #if defined __linux__ || defined __APPLE__ || defined __unix__
-        gmtime_r (pTimet, pTm);
-      #endif
-    /* Linux code: End */
+  if (tms != NULL) {
+    *pTm = *tms;
+  } else {
+    perror("could not convert time to UTC");
+    exit(EXIT_ERROR);
+  }
 }
 
 /*
-** time_t converted to  struct tm. Using local time.
+** time_t converted to struct tm. Using local time.
 */
 void myLocalTime (const time_t *pTimet, struct tm *pTm)
 {
-    /* Windows code: Start */
-      #if defined _WIN32 || defined _WIN64
-        errno_t err;
-        err = _localtime64_s (pTm, pTimet);
-        if (err) { printf ("Error: Invalid Argument to _gmtime64_s ().\n"); exit (EXIT_ERROR); }
-      #endif
-    /* Windows code: End */
-
-    /* Linux code: Start */
-      #if defined __linux__ || defined __APPLE__ || defined __unix__
-        localtime_r (pTimet, pTm);
-      #endif
-    /* Linux code: End */
+  struct tm *tms = localtime(pTimet);
+  if (tms != NULL) {
+    *pTm = *tms;
+  } else {
+    perror("could not convert time to local time");
+    exit (EXIT_ERROR);
+  }
 }
 
 /*
 ** A "struct tm" time can be different from UTC because of TimeZone
-** or Daylight Savings.  This function gives the difference - unit: hours.
+** or Daylight Savings. This function gives the difference - unit: hours.
 **
 ** Usage:
 ** Add the UTC bias to convert from local-time to UTC.
-** ptrTm is set
 */
 static double getUtcBiasHours (const time_t *pTimet)
 {
@@ -396,60 +395,18 @@ static double getUtcBiasHours (const time_t *pTimet)
   // Populate "struct tm" with UTC data for the given day
   myUtcTime (pTimet, &utcTm);
 
-  /* Windows code: Start */
-  #if defined _WIN32 || defined _WIN64
-    struct tm utcNoonTm, localNoonTm;
+  char buffer[80];
+  signed long int tmpLong = 0;
 
-    // Keep to the same day given, but go for noon. Daylight savings changes usually happen in the early hours.
-    // mktime() changes the values in "struct tm", so I need to use a private one anyway.
-    utcTm.tm_hour = 12;
-    utcTm.tm_min  = 0;
-    utcTm.tm_sec  = 0;
+  mktime(&utcTm); // Let "mktime()" do its magic
 
-    // Now convert this time to time_t (which is always, by definition, UTC),
-    // so I can run both of the two functions I can use that differentiate between timezones, using the same UTC moment.
-    time_t noonTimet = mktime (&utcTm); // Unfortunately this is noonTimet is local time. It's the best I can do.
-                                        // If it was UTC, all locations on earth are within the same day at noon.
-                                        // (Because UTC = GMT.  Noon GMT +/- 12hrs nestles upto, but not across, the dateline)
-                                        // Local-time 'days' (away from GMT) will probably cross the date line.
+  strftime (buffer, 80, "%z", &utcTm);
 
-    myLocalTime (&noonTimet, &localNoonTm);  // Generate 'struct tm' for local time
-    myUtcTime   (&noonTimet, &utcNoonTm);    // Generate 'struct tm' for UTC
-
-    // This is not nice, but Visual Studio does not support "strftime(%z)" (get UTC bias) like linux does.
-    // I'll figure out the UTC bias by comparing readings of local time to UTC for the same moment.
-
-    // Although localTm and utcTm may be different, some secret magic ensures that mktime() will bring
-    // them back to the same time_t value (as it should: they identify the same moment, just in different timezones).
-    // I'll just have to work out the utcBias using the differing 'struct tm' values. It isn't pretty.
-
-    utcBiasHours = (localNoonTm.tm_hour - utcNoonTm.tm_hour)
-                 + (localNoonTm.tm_min  - utcNoonTm.tm_min) / 60.0;
-
-    // The day may be different between the two times, especially if the local timezone is near the dateline.
-    // Rollover of tm_yday (from 365 to 0) is a further problem, but no bias is ever more than 24 hours - that wouldn't make sense.
-
-         if (localNoonTm.tm_year >  utcNoonTm.tm_year) utcBiasHours += 24.0; // Local time is in a new year, utc isn't:     so local time is a day ahead
-    else if (localNoonTm.tm_year <  utcNoonTm.tm_year) utcBiasHours -= 24.0; // Local time is in old year, utc is new year: so local time is a day behind
-    else utcBiasHours += (localNoonTm.tm_yday - utcNoonTm.tm_yday)*24.0;     // Year has not changed, so we can use tm_yday normaly
-  #endif
-  /* Windows code: End */
-
-  /* Linux code: Start */
-  #if defined __linux__ || defined __APPLE__ || defined __unix__
-    char buffer [80];
-    signed long int tmpLong = 0;
-
-    mktime (&utcTm); // Let "mktime()" do it's magic
-
-    strftime (buffer, 80, "%z", &utcTm);
-
-    if (strlen (buffer) > 0 && myIsNumber (buffer))
-    { tmpLong = atol (buffer);
-      utcBiasHours = (int)(tmpLong/100 + (tmpLong%100)/60.0);
-    }
-  #endif
-  /* Linux code: End */
+  if (strlen (buffer) > 0 && myIsNumber (buffer))
+  {
+    tmpLong = atol (buffer);
+    utcBiasHours = (int)(tmpLong/100 + (tmpLong%100)/60.0);
+  }
 
   return utcBiasHours;
 }
@@ -1081,19 +1038,7 @@ int sunwait (const runStruct *pRun)
   /*
   ** Sleep (wait) until the event is expected
   */
-
-  /* Windows code: Start */
-  #if defined _WIN32 || defined _WIN64
-    waitSeconds *= 1000; // Convert hours to milliseconds for Windows
-    Sleep ((DWORD) waitSeconds); // Windows-only . waitSec is tested positive or zero
-  #endif
-  /* Windows code: End */
-
-  /* Linux code: Start */
-  #if defined __linux__ || defined __APPLE__ || defined __unix__
-    sleep (waitSeconds);    // Linux-only (seconds OK)
-  #endif
-  /* Linux code: End */
+  sleepSeconds(waitSeconds);
 
   return EXIT_OK;
 }
