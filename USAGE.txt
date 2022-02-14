@@ -15,7 +15,7 @@ Major options, either:
     poll          Returns immediately indicating DAY or NIGHT. See 'program exit codes'. Default.
     wait          Sleep until specified event occurs. Else exit immediate.
     list [X]      Report twilight times for next 'X' days (inclusive). Default: 1.
-    report        Generate a report about the days sunrise and sunset timings.
+    report [date] Generate a report about the days sunrise and sunset timings. Default: the current day
 
 Minor options, any of:
     [no]debug     Print extra info and returns in one minute. Default: nodebug.
@@ -62,6 +62,9 @@ Indicate by program exit-code if is Day or Night using a custom twilight angle o
 Example 4: sunwait list 7 gmt sunrise angle 3
 List next 7 days sunrise times, custom +3 degree twilight angle, default location.
 Uses GMT; as any change in daylight saving over the specified period is not considered.
+
+Example 5: sunwait report y 20 m 3 d 15 10.49S 105.55E
+Produce a report of the different sunrises and sunsets on an arbitrary day (2022/03/15) for an arbitrary location (Christmas Island)
 
 Note that program uses C library functions to determine time and localtime.
 Error for timings are estimated at: +/- 4 minutes.
