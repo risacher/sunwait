@@ -704,9 +704,9 @@ int main (int argc, char *argv[])
                !strcmp (arg, "noutc"))        pRun->utc = ONOFF_OFF;
 
     // Debug mode
-    else if   (!strcmp (arg, "debug"))        ||
-               !strcmp (arg, "--debug"))      ||
-               !strcmp (arg, "--verbose"))    ||
+    else if   (!strcmp (arg, "debug")         ||
+               !strcmp (arg, "--debug")       ||
+               !strcmp (arg, "--verbose")     ||
                !strcmp (arg, "-v"))           pRun->debug = ONOFF_ON;
     else if   (!strcmp (arg, "nodebug"))      pRun->debug = ONOFF_OFF;
 
