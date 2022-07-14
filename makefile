@@ -6,9 +6,8 @@
 #
 
 
-C=gcc
-CFLAGS=-c -Wall 
-LDFLAGS= -lm -lstdc++
+CXXFLAGS=-Wall
+LDFLAGS= -lm
 SOURCES=sunwait.cpp sunriset.cpp print.cpp
 HEADERS=sunwait.h sunriset.h print.h
 OBJECTS=$(SOURCES:.cpp=.o)
@@ -17,10 +16,7 @@ EXECUTABLE=sunwait
 all: $(SOURCES) $(EXECUTABLE)
 	
 $(EXECUTABLE): $(OBJECTS)
-	$(C) $(OBJECTS) -o $@ $(LDFLAGS)
-
-.cpp.o:
-	$(C) $(CFLAGS) $< -o $@
+	$(CXX) $(OBJECTS) -o $@ $(LDFLAGS)
 
 clean:
 	rm -f *.o sunwait
