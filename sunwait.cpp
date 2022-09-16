@@ -3,11 +3,11 @@
 
 // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv CHANGE ME
 // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv CHANGE ME
-const double VERSION=0.8; // <<<<<<<<< CHANGE ME
+const double VERSION=0.91; // <<<<<<<<< CHANGE ME
 // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ CHANGE ME
 // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ CHANGE ME
 
-/* copyright (c) 2000,2004 Daniel Risacher */
+/* copyright (c) 2000,2004,2022 Daniel Risacher */
 /* minor changes courtesy of Dr. David M. MacMillan */
 /* major changes courtesy of Ian Craig (2012-13) */
 /* Licensed under the Gnu General Public License */
@@ -20,6 +20,7 @@ const double VERSION=0.8; // <<<<<<<<< CHANGE ME
 // IFC  2015-04-29  0.7  Timezone and DST fixes - and for date line timings
 // IFC  2015-05-27  0.8  Resolve 'dodgy day' and cleanup
 // TLJ  2020-10-03  0.9  Fix build on osx
+// DRR  2022-09-16  0.91 Fix build with modern GCC
 //
 
 #include <stdio.h>
