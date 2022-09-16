@@ -894,12 +894,12 @@ int main (int argc, char *argv[])
 
   if (pRun->latitude == NOT_SET)
   { if (pRun->debug == ONOFF_ON) printf ("Debug: latitude not set. Default applied.\n"); 
-    pRun->latitude  = DEFAULT_LATITUDE; /* The Buttercross, Bingham, England */
+    pRun->latitude  = DEFAULT_LATITUDE; 
   }
 
   if (pRun->longitude == NOT_SET) 
   { if (pRun->debug == ONOFF_ON) printf ("Debug: longitude not set. Default applied.\n"); 
-    pRun->longitude = DEFAULT_LONGITUDE; /* The Buttercross, Bingham, England */
+    pRun->longitude = DEFAULT_LONGITUDE; 
   }
 
   // /* Co-ordinates must be in 0 to 360 range */           // IFC 2014-12-02: Removed as done in isBearing()
