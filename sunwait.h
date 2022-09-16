@@ -16,7 +16,6 @@
 #define DEFAULT_LATITUDE  40.108306
 #define DEFAULT_LONGITUDE -89.7427 /* South Side School, Champaign, IL, USA */
 
-#define boolean bool
 #define NOT_SET 9999999
 #define     SET 1111111
 
@@ -26,7 +25,7 @@ typedef enum
 } OnOff;
 
 typedef struct
-{ 
+{
   double        latitude;            // Degrees N - Global position
   double        longitude;           // Degrees E - Global position
 
@@ -59,7 +58,7 @@ typedef struct
 } runStruct;
 
 typedef struct
-{ 
+{
   // "Input" data
   double        twilightAngle;       // Degrees. -ve = below horizon. Can be: daylight, civil, nautical, astronomical, or custom.
   unsigned long daysSince2000;       // The sunrise calculation needs this: days from start of 2000 to targetTimet
@@ -84,8 +83,8 @@ void myLocalTime (const time_t * ptrTimet, struct tm * ptrTm);
 
 OnOff isDay (const runStruct *pRun);
 
-int poll (const runStruct *pRun);
-int wait (const runStruct *pRun);
+int sunpoll (const runStruct *pRun);
+int sunwait (const runStruct *pRun);
 
 
 #endif

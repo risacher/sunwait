@@ -13,19 +13,17 @@
 ** IFC  08-12-2014  0.6  Add timezone for output of timings
 ** IFC  29-04-2015  0.7  Fix for timezone (esp near date line) and more debug
 ** IFC  2015-05-27  0.8  Resolve 'dodgy day' and cleanup
+** DRR  2022-09-16  0.91 Move to C courtesy mstilkerich 
 **
 */
 
 #include <stdio.h>
-#include <stdlib.h> // Linux
-#include <iostream>
+
 #include <math.h>
 #include <time.h>
 
 #include "sunwait.h"
 #include "sunriset.h"
-
-using namespace std;
 
 /************************************************************************/
 /* Note: Eastern longitude positive, Western longitude negative         */
@@ -92,18 +90,18 @@ void sunriset (const runStruct *pRun, targetStruct *pTarget)
   /* compute the diurnal arc that the sun traverses to reach the specified altitide altit: */
   double cost = (sind(altitude) - sind(pRun->latitude) * sind(sdec)) / (cosd(pRun->latitude) * cosd(sdec));
 
-  if (abs(int(cost)) < 1.0)
+  if (cost > -1.0 && cost < 1.0)
     diurnalArc = 2*acosd(cost)/15.0;    /* Diurnal arc, hours */
-  else if (cost>=1.0)
+  else if (cost >= 1.0)
     diurnalArc =  0.0; // Polar Night
   else
     diurnalArc = 24.0; // Midnight Sun
 
   if (pRun->debug == ONOFF_ON)
-  { printf ("Debug: sunriset.cpp: Sun directly south: %f UTC, Diurnal Arc = %f hours\n", southHour, diurnalArc);
-    printf ("Debug: sunriset.cpp: Days since 2000: %li\n", pTarget->daysSince2000);
-    if (diurnalArc >= 24.0) printf ("Debug: sunriset.cpp: No rise or set: Midnight Sun\n");
-    if (diurnalArc <=  0.0) printf ("Debug: sunriset.cpp: No rise or set: Polar Night\n");
+    { printf ("Debug: %s: Sun directly south: %f UTC, Diurnal Arc = %f hours\n", __FILE__, southHour, diurnalArc);
+    printf ("Debug: %s: Days since 2000: %li\n", __FILE__, pTarget->daysSince2000);
+    if (diurnalArc >= 24.0) printf ("Debug: %s: No rise or set: Midnight Sun\n", __FILE__);
+    if (diurnalArc <=  0.0) printf ("Debug: %s: No rise or set: Polar Night\n", __FILE__);
   }
 
   // Error Check - just make sure odd things don't happen (causing trouble further on)
@@ -150,22 +148,22 @@ void sun_RA_dec (const double d, double *RA, double *dec, double *r)
   double lon, obl_ecl;
   double xs, ys;
   double xe, ye, ze;
-  
+
   /* Compute Sun's ecliptical coordinates */
   sunpos (d, &lon, r);
-  
+
   /* Compute ecliptic rectangular coordinates */
   xs = *r * cosd(lon);
   ys = *r * sind(lon);
 
   /* Compute obliquity of ecliptic (inclination of Earth's axis) */
   obl_ecl = 23.4393 - 3.563E-7 * d;
-  
+
   /* Convert to equatorial rectangular coordinates - x is unchanged */
   xe = xs;
   ye = ys * cosd(obl_ecl);
   ze = ys * sind(obl_ecl);
-  
+
   /* Convert to spherical coordinates */
   *RA = atan2d(ye, xe);
   *dec = atan2d(ze, sqrt(xe*xe + ye*ye));
@@ -203,7 +201,7 @@ double fixLatitude (const double x)
   else if (y <= (double) 270.0) y = (double) 180.0 - y;
   else if (y <= (double) 360.0) y = y - (double) 360.0;
 
-  // Linux compile of sunwait doesn't like 90, Windows is OK. 
+  // Linux compile of sunwait doesn't like 90, Windows is OK.
   // Let's just wiggle things a little bit to make things OK.
        if (y == (double)  90.0) y = (double)  89.9999999;
   else if (y == (double) -90.0) y = (double) -89.9999999;
@@ -260,11 +258,11 @@ unsigned long daysSince2000 (const time_t *pTimet)
   struct tm tmpTm;
 
   myUtcTime (pTimet, &tmpTm);
-  
+
   unsigned int yearsSince2000 = tmpTm.tm_year - 100; // Get year, but tm_year starts from 1900
 
   // Calucate number of leap days, but -
-  //   yearsSince2000 - 1 
+  //   yearsSince2000 - 1
   // Don't include this year as tm_yday includes this year's leap day in the next bit
 
   unsigned int leapDaysSince2000

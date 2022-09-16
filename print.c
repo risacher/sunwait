@@ -1,17 +1,17 @@
 
 /*
-** print.cpp  (of sunwait)
+** print.c  (of sunwait)
 **
 ** Who Ver   When        What
 ** IFC  0.5  04-12-2014  Fix my 1st release of sunwait for windows and port to linux
 ** IFC  0.6  08-12-2014  Add timezone for output of timings
 ** IFC  0.7  30-04-2015  Fix timexone and DST trouble - and problems near dateline
 ** IFC  0.8  2015-05-27  Resolve 'dodgy day' and cleanup
+** DRR  0.91 2022-09-16  Accept change to C from mstilkerich Michael Stilkerich
 **
 */
 
 #include <stdio.h>
-#include <iostream>
 #include <math.h> 
 #include <time.h>
 
@@ -24,17 +24,9 @@ static const char* cComma = ", ";
 
 #define NO_OFFSET 0.0
 
-inline double myDayLength (const double pDouble1, const double pDouble2)
-{ return myAbs (pDouble1 - pDouble2);
-}
-
-inline double myDayLength (const targetStruct *pTarget)
-{ return pTarget->diurnalArc;
-}
-
 // The user-specified offset reduces the diurnal arc, at sunrise AND sunset.
 // But make sure dawn aways is before dusk. The offset can mess that up.
-double diurnalArcWithOffset1 (const double pDiurnalArc, const double pOffset)
+static double diurnalArcWithOffset1 (const double pDiurnalArc, const double pOffset)
 { double arcWithOffset = pDiurnalArc - pOffset - pOffset;
   if (arcWithOffset >= 24.0) return 24.0;
   if (arcWithOffset <=  0.0) return  0.0;
@@ -46,7 +38,7 @@ double diurnalArcWithOffset (const runStruct *pRun, const targetStruct *pTarget)
 }
 
 // What time, in hours UTC, is the offset sunrise?
-double getOffsetRiseHourUTC1 (const double pSouthHourUTC, const double pDiurnalArc, const double pOffsetHour)
+static double getOffsetRiseHourUTC1 (const double pSouthHourUTC, const double pDiurnalArc, const double pOffsetHour)
 { return pSouthHourUTC - diurnalArcWithOffset1 (pDiurnalArc, pOffsetHour)/2.0;
 }
 // Simpler to use form
@@ -55,7 +47,7 @@ double getOffsetRiseHourUTC (const runStruct *pRun, const targetStruct *pTarget)
 }
 
 // What time, in hours UTC, is the offset sunset?
-double getOffsetSetHourUTC1 (const double pSouthHourUTC, const double pDiurnalArc, const double pOffsetHour)
+static double getOffsetSetHourUTC1 (const double pSouthHourUTC, const double pDiurnalArc, const double pOffsetHour)
 { return pSouthHourUTC + diurnalArcWithOffset1 (pDiurnalArc, pOffsetHour)/2.0;
 }
 // Simpler to use form
@@ -64,11 +56,11 @@ double getOffsetSetHourUTC (const runStruct *pRun, const targetStruct *pTarget)
 }
 
 
-void print_a_time
+static void print_a_time
 ( const OnOff   pGmt_OnOff
 , const time_t *pMidnightTimet
 , const double  pEventHour
-) 
+)
 { struct tm tmpTm;
   char tmpBuffer [80];
 
@@ -89,12 +81,12 @@ void print_a_time
   printf ("%s", tmpBuffer);
 }
 
-void print_a_sun_time
+static void print_a_sun_time
 ( const OnOff   pGmt_OnOff
 , const time_t *pMidnightTimet
 , const double  pEventHour
 , const double  pOffsetDiurnalArc
-) 
+)
 { // A positive offset reduces the diurnal arc
   if (pOffsetDiurnalArc <=  0.0 || pOffsetDiurnalArc >= 24.0)
     printf ("--:--");
@@ -102,49 +94,27 @@ void print_a_sun_time
     print_a_time (pGmt_OnOff, pMidnightTimet, pEventHour);
 }
 
-void print_times
-( const OnOff    pGmt
-, const OnOff    pSunrise
-, const OnOff    pSunset
-, const time_t   pMidnightTimet 
-, const double   pSouthHour
-, const double   pDiurnalArc
-, const double   pOffset
-, const char    *pSeparator
-) 
-{ double offsetDiurnalArc = diurnalArcWithOffset1 (pDiurnalArc, pOffset);
-  double riseHour         = getOffsetRiseHourUTC1 (pSouthHour, pDiurnalArc, pOffset);
-  double setHour          = getOffsetSetHourUTC1  (pSouthHour, pDiurnalArc, pOffset);
-
-  if (pSunrise == ONOFF_ON)
-    print_a_sun_time (pGmt, &pMidnightTimet, riseHour, offsetDiurnalArc);
-  if (pSunrise == ONOFF_ON && pSunset == ONOFF_ON)
-    printf ("%s", pSeparator);
-  if (pSunset  == ONOFF_ON)
-    print_a_sun_time (pGmt, &pMidnightTimet, setHour, offsetDiurnalArc);
-
-       if (offsetDiurnalArc >= 24.0) printf (" (Midnight sun)");
-  else if (offsetDiurnalArc <=  0.0) printf (" (Polar night)");
-
-  printf ("\n");
-}
-
-inline void print_times 
+static void print_times
 ( const runStruct    *pRun
 , const targetStruct *pTarget
 , const double  pOffsetHour
 , const char   *pSeparator
 )
-{ print_times
-  ( pRun->utc
-  , pRun->reportSunrise
-  , pRun->reportSunset
-  , pRun->targetTimet
-  , pTarget->southHourUTC
-  , pTarget->diurnalArc
-  , pOffsetHour
-  , pSeparator
-  );
+{ double offsetDiurnalArc = diurnalArcWithOffset1 (pTarget->diurnalArc, pOffsetHour);
+  double riseHour         = getOffsetRiseHourUTC1 (pTarget->southHourUTC, pTarget->diurnalArc, pOffsetHour);
+  double setHour          = getOffsetSetHourUTC1  (pTarget->southHourUTC, pTarget->diurnalArc, pOffsetHour);
+
+  if (pRun->reportSunrise == ONOFF_ON)
+    print_a_sun_time (pRun->utc, &pRun->targetTimet, riseHour, offsetDiurnalArc);
+  if (pRun->reportSunrise == ONOFF_ON && pRun->reportSunset == ONOFF_ON)
+    printf ("%s", pSeparator);
+  if (pRun->reportSunset  == ONOFF_ON)
+    print_a_sun_time (pRun->utc, &pRun->targetTimet, setHour, offsetDiurnalArc);
+
+       if (offsetDiurnalArc >= 24.0) printf (" (Midnight sun)");
+  else if (offsetDiurnalArc <=  0.0) printf (" (Polar night)");
+
+  printf ("\n");
 }
 
 inline void print_twilight
@@ -161,7 +131,7 @@ inline void print_twilight
 void generate_report (const runStruct *pRun)
 {
   /*
-  ** Generate and save sunrise and sunset times for target 
+  ** Generate and save sunrise and sunset times for target
   */
 
   targetStruct tmpTarget;
@@ -173,7 +143,7 @@ void generate_report (const runStruct *pRun)
   double  twilightAngleTarget  = tmpTarget.twilightAngle;
 
   /*
-  ** Now generate the report 
+  ** Now generate the report
   */
 
   struct tm nowTm;
@@ -190,19 +160,19 @@ void generate_report (const runStruct *pRun)
   }
 
   printf ("\n");
-  
+
   strftime (buffer, 80, "%d-%b-%Y %H:%M %Z", &nowTm);
-  printf 
+  printf
   ("      Current Date and Time: %s\n", buffer);
 
   printf ("\n\nTarget Information ...\n\n");
 
-  printf 
+  printf
   ("                   Location: %10.6fN, %10.6fE\n"
   , pRun->latitude
   , pRun->longitude
   );
-  
+
   strftime (buffer, 80, "%d-%b-%Y", &targetTm);
   printf
   ("                       Date: %s\n", buffer);
@@ -231,14 +201,14 @@ void generate_report (const runStruct *pRun)
   else                                                             printf("             Twilight angle: %5.2f degrees (custom angle)\n", twilightAngleTarget);
 
   printf   ("          Day with twilight: "); print_times (pRun, &tmpTarget, NO_OFFSET, cTo);
-  
+
   if (pRun->offsetHour != NO_OFFSET)
   { printf (" Day with twilight & offset: "); print_times (pRun, &tmpTarget, pRun->offsetHour, cTo); }
 
   printf   ("                      It is: %s\n", isDay (pRun) == ONOFF_ON ? "Day (or twilight)" : "Night");
 
   /*
-  ** Generate times for different types of twilight 
+  ** Generate times for different types of twilight
   */
 
   targetStruct daylightTarget;
