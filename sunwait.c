@@ -21,6 +21,7 @@ const double VERSION=0.92; // <<<<<<<<< CHANGE ME
 // IFC  2015-05-27  0.8  Resolve 'dodgy day' and cleanup
 // TLJ  2020-10-03  0.9  Fix build on osx
 // DRR  2022-09-16  0.91 Fix build with modern GCC
+// EKH  2024-01-21  0.92 Changed usgae data to be consistent with program behavior in regards to value acceptable to the year input
 //
 
 #include <stdio.h>
