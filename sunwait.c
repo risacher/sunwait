@@ -3,7 +3,7 @@
 
 // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv CHANGE ME
 // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv CHANGE ME
-const double VERSION=0.91; // <<<<<<<<< CHANGE ME
+const double VERSION=0.92; // <<<<<<<<< CHANGE ME
 // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ CHANGE ME
 // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ CHANGE ME
 
@@ -127,7 +127,7 @@ static void print_usage ()
   printf ("Target date. Only useful with major-options: 'report' or 'list'. Default: today\n");
   printf ("    d [DD]        Set the target Day-of-Month to calculate for. 1 to 31.\n");
   printf ("    m [MM]        Set the target Month to calculate for. 1 to 12.\n");
-  printf ("    y [YYYY]      Set the target Year to calculate for. 2000 to 2099.\n");
+  printf ("    y [YY]        Set the target Year to calculate for. 0 to 99.\n");
   printf ("\n");
   printf ("latitude/longitude coordinates: floating-point degrees, with [NESW] appended. Default: Bingham, England.\n");
   printf ("\n");
