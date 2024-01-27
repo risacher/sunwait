@@ -3,7 +3,7 @@
 
 // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv CHANGE ME
 // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv CHANGE ME
-const double VERSION=0.91; // <<<<<<<<< CHANGE ME
+const double VERSION=0.92; // <<<<<<<<< CHANGE ME
 // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ CHANGE ME
 // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ CHANGE ME
 
@@ -21,6 +21,7 @@ const double VERSION=0.91; // <<<<<<<<< CHANGE ME
 // IFC  2015-05-27  0.8  Resolve 'dodgy day' and cleanup
 // TLJ  2020-10-03  0.9  Fix build on osx
 // DRR  2022-09-16  0.91 Fix build with modern GCC
+// EKH  2024-01-21  0.92 Changed usgae data to be consistent with program behavior in regards to value acceptable to the year input
 //
 
 #include <stdio.h>
@@ -127,7 +128,7 @@ static void print_usage ()
   printf ("Target date. Only useful with major-options: 'report' or 'list'. Default: today\n");
   printf ("    d [DD]        Set the target Day-of-Month to calculate for. 1 to 31.\n");
   printf ("    m [MM]        Set the target Month to calculate for. 1 to 12.\n");
-  printf ("    y [YYYY]      Set the target Year to calculate for. 2000 to 2099.\n");
+  printf ("    y [YY]        Set the target Year to calculate for. 0 to 99.\n");
   printf ("\n");
   printf ("latitude/longitude coordinates: floating-point degrees, with [NESW] appended. Default: Bingham, England.\n");
   printf ("\n");

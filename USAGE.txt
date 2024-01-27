@@ -40,7 +40,7 @@ Offset:
 Target date. Only useful with major-options: 'report' or 'list'. Default: today
     d [DD]        Set the target Day-of-Month to calculate for. 1 to 31.
     m [MM]        Set the target Month to calculate for. 1 to 12.
-    y [YYYY]      Set the target Year to calculate for. 2000 to 2099.
+    y [YY]      Set the target Year to calculate for. 0 to 99.
 
 latitude/longitude coordinates: floating-point degrees, with [NESW] appended. Default: Bingham, England.
 
@@ -63,7 +63,7 @@ Example 4: sunwait list 7 gmt sunrise angle 3
 List next 7 days sunrise times, custom +3 degree twilight angle, default location.
 Uses GMT; as any change in daylight saving over the specified period is not considered.
 
-Example 5: sunwait report y 20 m 3 d 15 10.49S 105.55E
+Example 5: sunwait report y 22 m 3 d 15 10.49S 105.55E
 Produce a report of the different sunrises and sunsets on an arbitrary day (2022/03/15) for an arbitrary location (Christmas Island)
 
 Note that program uses C library functions to determine time and localtime.
